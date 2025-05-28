@@ -69,7 +69,7 @@ class Pool:
                 self.inverse_len[index]=1/(len(self.state_pool_list[index])+1)
             s=np.expand_dims(s,axis=0)
             a=self.select_action(s)
-            next_s,r,done=self.env_(a,p=p)
+            a,next_s,r,done=self.env[p].step(a)
             next_s=np.array(next_s)
             r=np.array(r)
             done=np.array(done)
