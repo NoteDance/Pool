@@ -4,11 +4,13 @@ import math
 
 
 class Pool:
-    def __init__(self, env, processes, pool_size, clearing_freq=None):
+    def __init__(self, env, processes, pool_size, window_size=None, clearing_freq=None, window_size_=None):
         self.env = env
         self.processes = processes
         self.pool_size = pool_size
+        self.window_size = window_size
         self.clearing_freq = clearing_freq
+        self.window_size_ = window_size_
         manager=mp.Manager()
         self.state_pool_list=manager.list()
         self.action_pool_list=manager.list()
