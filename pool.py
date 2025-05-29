@@ -4,13 +4,14 @@ import math
 
 
 class Pool:
-    def __init__(self, env, processes, pool_size, window_size=None, clearing_freq=None, window_size_=None):
+    def __init__(self, env, processes, pool_size, window_size=None, clearing_freq=None, window_size_=None, random=True):
         self.env = env
         self.processes = processes
         self.pool_size = pool_size
         self.window_size = window_size
         self.clearing_freq = clearing_freq
         self.window_size_ = window_size_
+        self.random = random
         manager=mp.Manager()
         self.state_pool_list=manager.list()
         self.action_pool_list=manager.list()
@@ -61,14 +62,17 @@ class Pool:
         s,a=self.env[p].reset()
         s=np.array(s)
         while True:
-            if self.state_pool_list[p] is None:
-                index=p
-                self.inverse_len[index]=1
+            if self.random==True:
+                if self.state_pool_list[p] is None:
+                    index=p
+                    self.inverse_len[index]=1
+                else:
+                    total_inverse=np.sum(self.inverse_len)
+                    prob=self.inverse_len/total_inverse
+                    index=np.random.choice(self.processes,p=prob.numpy())
+                    self.inverse_len[index]=1/(len(self.state_pool_list[index])+1)
             else:
-                total_inverse=np.sum(self.inverse_len)
-                prob=self.inverse_len/total_inverse
-                index=np.random.choice(self.processes,p=prob.numpy())
-                self.inverse_len[index]=1/(len(self.state_pool_list[index])+1)
+                index=p
             s=np.expand_dims(s,axis=0)
             a=self.select_action(s)
             a,next_s,r,done=self.env[p].step(a)
