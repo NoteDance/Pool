@@ -18,8 +18,11 @@ class Pool:
         self.next_state_pool_list=manager.list()
         self.reward_pool_list=manager.list()
         self.done_pool_list=manager.list()
-        self.inverse_len=manager.list([0 for _ in range(processes)])
-        self.lock_list=[mp.Lock() for _ in range(self.processes)]
+        if random:
+            self.inverse_len=manager.list([0 for _ in range(processes)])
+            self.lock_list=[mp.Lock() for _ in range(self.processes)]
+        else:
+            self.lock_list=None
         if self.clearing_freq!=None:
             self.store_counter=manager.list()
     
@@ -62,7 +65,7 @@ class Pool:
         s,a=self.env[p].reset()
         s=np.array(s)
         while True:
-            if self.random==True:
+            if self.random:
                 if self.state_pool_list[p] is None:
                     index=p
                     self.inverse_len[index]=1
@@ -79,9 +82,12 @@ class Pool:
             next_s=np.array(next_s)
             r=np.array(r)
             done=np.array(done)
-            lock_list[index].acquire()
-            self.pool(s,a,next_s,r,done,index)
-            lock_list[index].release()
+            if self.random:
+                lock_list[index].acquire()
+                self.pool(s,a,next_s,r,done,index)
+                lock_list[index].release()
+            else:
+                self.pool(s,a,next_s,r,done,index)
             if done:
                 return
             s=next_s
