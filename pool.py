@@ -77,7 +77,6 @@ class Pool:
             else:
                 index=p
             s=np.expand_dims(s,axis=0)
-            a=self.select_action(s)
             a,next_s,r,done=self.env[p].step(a)
             next_s=np.array(next_s)
             r=np.array(r)
