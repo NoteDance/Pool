@@ -68,8 +68,8 @@ class Pool:
                 self.reward_pool_list[index]=self.reward_pool_list[index][1:]
                 self.done_pool_list[index]=self.done_pool_list[index][1:]
     
-    def store_in_parallel(self,p,lock_list):
-        s,a=self.env[p].reset()
+    def store_in_parallel(self,env,p,lock_list):
+        s,a=env.reset()
         s=np.array(s)
         while True:
             if self.random:
@@ -84,7 +84,7 @@ class Pool:
             else:
                 index=p
             s=np.expand_dims(s,axis=0)
-            a,next_s,r,done=self.env[p].step(a)
+            a,next_s,r,done=env.step(a)
             next_s=np.array(next_s)
             r=np.array(r)
             done=np.array(done)
@@ -101,7 +101,7 @@ class Pool:
     def store(self):
         process_list=[]
         for p in range(self.processes):
-            process=mp.Process(target=self.store_in_parallel,args=(p,self.lock_list))
+            process=mp.Process(target=self.store_in_parallel,args=(self.env[p],p,self.lock_list))
             process.start()
             process_list.append(process)
         for process in process_list:
