@@ -18,6 +18,12 @@ class Pool:
         self.next_state_pool_list=manager.list()
         self.reward_pool_list=manager.list()
         self.done_pool_list=manager.list()
+        for _ in range(processes):
+            self.state_pool_list.append(None)
+            self.action_pool_list.append(None)
+            self.next_state_pool_list.append(None)
+            self.reward_pool_list.append(None)
+            self.done_pool_list.append(None)
         if random:
             self.inverse_len=manager.list([0 for _ in range(processes)])
             self.lock_list=[mp.Lock() for _ in range(self.processes)]
