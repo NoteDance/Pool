@@ -52,7 +52,7 @@ This internal method is responsible for adding new experience tuples to the appr
 - **`done`** (bool): A boolean indicating if the episode terminated.
 - **`index`** (int, optional): The index of the sub-pool (and thus the process) to which the data belongs.
 
-### `store_in_parallel(self, p, lock_list)`
+### `store_in_parallel(self, env, p, lock_list)`
 
 This method is executed by each parallel process. It continuously interacts with its assigned environment (`self.env[p]`), collects experience tuples, and then calls the `pool` method to store them. If `random` is `True`, it uses locks to ensure thread-safe access to shared data structures when determining which sub-pool to update.
 
