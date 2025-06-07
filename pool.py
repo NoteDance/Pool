@@ -79,7 +79,7 @@ class Pool:
                 else:
                     total_inverse=np.sum(self.inverse_len)
                     prob=self.inverse_len/total_inverse
-                    index=np.random.choice(self.processes,p=prob.numpy())
+                    index=np.random.choice(self.processes,p=prob.numpy(),replace=False)
                     self.inverse_len[index]=1/(len(self.state_pool_list[index])+1)
             else:
                 index=p
